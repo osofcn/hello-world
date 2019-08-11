@@ -5,22 +5,21 @@
 
 int getLine(char oneline[],int maxl);
 void getsub(char oneline[],int cl,char subline[]);
+extern int strindex(char [],char[]);
+
 int main(void){
-	int c;
+	int c,d;
 	char oneline[MAXL];
-	char subline[MAXL];
+	char subline[]="sub";
 	while((c=getLine(oneline,MAXL))>0){
-		if(c>=MOSTL){
-			getsub(oneline,c,subline);
-			printf("%s%d",subline,c);
-		}
-		else{
-	        	printf("%s",oneline);
-		}
+		if((d=strindex(oneline,subline))>=0)
+		printf("%d%s",d,oneline);
 	}
+	return 0;
 }
 int getLine(char oneline[],int maxl){
 	int c,i;
+	i=0;
 	for(i=0;i<maxl-1&&(c=getchar())!=EOF&&c!='\n';i++)
 		oneline[i]=c;
 	if(c=='\n'){
@@ -28,7 +27,6 @@ int getLine(char oneline[],int maxl){
 		i++;
 	}
 	oneline[i]='\0';
-	i++;
 	return i;
 }
 

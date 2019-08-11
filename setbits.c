@@ -2,12 +2,13 @@
 
 unsigned setbits(unsigned,int,int,unsigned);
 unsigned invert(unsigned,int,int);
+unsigned rightrot(unsigned,int);
 
 int main(void){
 	int x;
 	int y;
 	scanf("%x",&x);
-	printf("%x\n",invert(x,8,4));
+	printf("%x\n",rightrot(x,4));
 
 }
 
@@ -20,6 +21,8 @@ unsigned invert(unsigned x,int p,int n){
 }
 
 unsigned rightrot(unsigned x,int n){
-	return (x & ~(~0 << n)) 
+	return ((x & ~(~0 << n)) << (sizeof x)*8-n) | (x >> n);
+}
+
 
 
