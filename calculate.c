@@ -68,6 +68,7 @@ int main(void){
 		default :
 			if(isupper(type))
 				push(var[type-'A']);
+			else
 			printf("unknow command %s\n",s);
 			break;
 		}

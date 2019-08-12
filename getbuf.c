@@ -2,7 +2,7 @@
 #include <stdio.h>
 #define BUFSIZE 100
 
-char buf[BUFSIZE];
+int buf[BUFSIZE];
 int bp=0;
 
 int getch(void){
@@ -14,5 +14,12 @@ void ungetch(int c){
 		buf[bp++]=c;
 	else
 		printf("sdsdfs");
+}
+
+void ungets(char s[]){
+	void ungetch(int c);
+
+	for(int i=0;s[i]!='\0';i++)
+		ungetch(s[i]);
 }
 
