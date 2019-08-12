@@ -8,13 +8,21 @@ void ungetch(int);
 
 int getop(char s[]){
 	int i;
-	int c;
+	int c,c2;
 	while((c=s[0]=getch())==' '|| c=='\t')
 		;
 	s[1]='\0';
-	if(!isdigit(c) && c!='.')
-		return c;            //not a number
+	if(!isdigit(c) && c!='.'&&c!='+'&&c!='-')
+		return c;	//not a number
 	i=0;
+	if((c=='+'||c=='-')&&(!isdigit(c2=getch()))){
+		ungetch(c2);
+		return c;
+	}
+	if(c=='+' ||c=='-'){
+		s[++i]=c2;
+		c=c2;
+	}
 	if(isdigit(c))
 		while(isdigit(s[++i]=c=getch()));
 	if(c=='.')

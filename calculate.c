@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
 
 #define NUMBER 0
 #define NUMSIZE 100
@@ -10,12 +11,22 @@ double pop(void);
 void push(double);
 int main(void){
 	char s[NUMSIZE];
+	int sv;
 	int type;
 	double op2;
+	double var[26];
 	while((type=getop(s))!=EOF){
 	switch(type){
 		case 0 :
 			push(atof(s));
+			break;
+		case '=' :
+			if(isupper(sv)){
+				pop();
+				var[sv-'A']=pop();
+			}
+			else
+				printf("error");
 			break;
 		case '+' :
 			push(pop()+pop());
@@ -55,10 +66,16 @@ int main(void){
 			printf("\t%f\n", pop());		
 			break;
 		default :
+			if(isupper(type))
+				push(var[type-'A']);
 			printf("unknow command %s\n",s);
 			break;
 		}
+	sv=type;
+	
 	}
+
+
 	return 0;
 }
 
