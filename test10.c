@@ -17,17 +17,16 @@ int main(void){
 	}
 	return 0;
 }
-int getLine(char oneline[],int maxl){
-	int c,i;
-	i=0;
-	for(i=0;i<maxl-1&&(c=getchar())!=EOF&&c!='\n';i++)
-		oneline[i]=c;
-	if(c=='\n'){
-		oneline[i]=c;
-		i++;
-	}
-	oneline[i]='\0';
-	return i;
+int getLine(char *oneline,int maxl){
+	int c;
+	char *ptr;
+	ptr=oneline;
+	while(--maxl>0&&(c=getchar())!=EOF&&c!='\n')
+		*oneline++=c;
+	if(c=='\n')
+		*oneline++=c;
+	*oneline='\0';
+	return oneline-ptr;
 }
 
 void getsub(char oneline[],int cl,char subline[]){

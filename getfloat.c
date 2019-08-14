@@ -15,14 +15,15 @@ int getfloat(float *f){
 	       ungetch(c);
 	       return 0;
 	}
+	*f=0.0;
 	if(isdigit(c)){
-		for(*f=0.0;isdigit(c); c=getch())
+		for(;isdigit(c); c=getch())
 			*f=10 * *f + (c - '0');
 	}
 	if(c=='.'){
 		power=1.0;
 		while(isdigit(c=getch())){
-			*f=10 * (*f) + (c-'0');
+			*f=10 * *f + (c-'0');
 			power *=10;
 		}
 		*f /=power;
@@ -33,11 +34,12 @@ int getfloat(float *f){
 }
 
 int main(void){
-	float *f;
+	float ff;
 	int a;
-	while((a=getfloat(f))!=EOF){
+	while((a=getfloat(&ff))!=EOF){
 		if(a!=0)
-		printf("%f ",*f);
+		printf("%f ",ff);
 	}
+	printf("\n");
 	return 0;
 }
