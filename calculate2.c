@@ -12,11 +12,11 @@ void push(double);
 int cal(char []);
 int getLine(char oneline[],int maxl);
 
-int main(void){
+int main(int argc, char *argv[]){
 	char s[NUMSIZE];
-	while(getLine(s,NUMSIZE)>0){
-		cal(s);
-	}
+	while(argc-- >1)
+		cal(*++argv);
+	printf("%f\n",pop());
 
 }
 
