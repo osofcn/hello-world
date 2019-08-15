@@ -10,8 +10,9 @@ void qsort(char *v[], int left, int right){
 	if(left>=right)
 		return;
 	swap(v,left, (left+right)/2);
-	for(i=left+1,last=left;i<=right;i++)
-		if(strcm(v[left],v[i]))
+	last=left;
+	for(i=left+1;i<=right;i++)
+		if(strcm(v[i],v[left])<0)
 				swap(v, ++last, i);
 	swap(v, left, last);
 	qsort(v, left, last-1);

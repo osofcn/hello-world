@@ -9,7 +9,8 @@ int getop(char[]);
 double atof(char[]);
 double pop(void);
 void push(double);
-int main(void){
+
+int main(int argc,char *argv[]){
 	char s[NUMSIZE];
 	int sv;
 	int type;

@@ -12,3 +12,9 @@ int getLine(char *oneline,int maxl){
 	return oneline-ptr;
 }
 
+/* int main(void){
+	char oneline[1000];
+	while(getLine(oneline,10000))
+		printf("%s",oneline);
+}
+*/
