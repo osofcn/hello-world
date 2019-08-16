@@ -1,20 +1,50 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #define MAXLEN 1000
 #define MAXLINES 5000
 #define MAXB 10000
 
-extern void qsort(char *v[], int ,int);
+extern void qsort(void *v[], int ,int,int (*)(void *, void *));
 int readlines(char *text,char *lineptr[], int);
 void writelines(char *lineptr[] , int);
 int getLine(char *, int);
+int numcmp(char *, char *);
+double atof(char *);
+int strvcmp(char *,char *);
+int strdcmp(char *,char *);
 
-int main(void){
+int main(int argc, char *argv[]){
 	char text[MAXB];
 	char *lineptr[MAXLINES];
 	int nlines;
+	int (*numbers)(void *,void *) =(int (*)(void *,void *))strcmp;
+	int i,type;
+	type=0;
+	for(i=1;argc-i>0;i++){
+		if(strcmp(argv[i], "-n")==0)
+			type='n';
+		else if(strcmp(argv[i], "-f")==0)
+			type +='f';
+		else if(strcmp(argv[i], "-d")==0)
+			type +='d';
+	}
+	switch(type){
+		case 'n' :
+			numbers=(int (*)(void *,void *))numcmp;
+			break;
+		case 'f' :
+			numbers=(int (*)(void *,void *))strvcmp;
+			break;
+		case 'd' :
+			numbers=(int (*)(void *,void *))strdcmp;
+			break;
+		default :
+			printf("error args\n");
+			break;
+	}
 	if((nlines=readlines(text, lineptr,MAXLINES))>=0){
-        qsort(lineptr,0,nlines-1);	
+        qsort((void **)lineptr,0,nlines-1,(int (*)(void *,void *))numbers);	
 	writelines(lineptr, nlines);
 	return 0;
 	}
@@ -46,4 +76,39 @@ void writelines(char *lineptr[], int nlines){
 }
 
 
+int numcmp(char *s, char *t){
+	double n1,n2;
+	n1=atof(s);
+	n2=atof(t);
+	if(n1>n2)
+		return 1;
+	else if(n1==n2)
+		return 0;
+	else
+		return -1;
+}
 
+int strvcmp(char *s, char *t){
+	int c;
+	int i;
+	for(i=0;tolower(s[i])==tolower(t[i]);i++)
+		if(s[i]=='\0')
+			return 0;
+	return tolower(s[i]) - tolower(t[i]);
+}
+
+int strdcmp(char *s, char *t){
+	int i=0;
+	int j=0;
+	while(s[i]!='\0' && t[j]!='\0'){
+		if(!isalnum(s[i])&&s[i]!=' ')
+			i++;
+		if(!isalnum(t[i])&&t[i]!=' ')
+			j++;
+		if(s[i]==t[j])
+			i++, j++;
+			else if((isalnum(s[i]) || s[i]==' ')&&(isalnum(t[j]) || t[j]==' '))
+			return s[i] - t[j];
+	}
+	return s[i] - t[j];
+}
