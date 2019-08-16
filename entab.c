@@ -3,15 +3,27 @@
 #define TABS 8
 
 int getLine(char oneline[],int maxl);
-void spacetotab(char yline[],int cl,char toline[]);
-int main(void){
+void spacetotab(char yline[],int cl,char toline[],int tabl);
+extern double atof(char *f);
+
+    int main(int argc, char *argv[]){
 	int c;
 	char oneline[MAXL];
 	char toline[MAXL];
+	int tabl;
+	if(argc==1)
+		tabl=TABS;
+	else if(argc==2)
+		tabl=(int)atof(*++argv);
+	else{
+		printf("error arg");
+		return 1;
+	}
 	while((c=getLine(oneline,MAXL))>0){
-		spacetotab(oneline,c,toline);
+		spacetotab(oneline,c,toline,tabl);
 		printf("%s",toline);
 	}
+	return 0;
 }
 int getLine(char oneline[],int maxl){
 	int c,i;
@@ -22,18 +34,17 @@ int getLine(char oneline[],int maxl){
 		i++;
 	}
 	oneline[i]='\0';
-	i++;
 	return i;
 }
 
-void spacetotab(char yline[],int cl,char toline[]){
+void spacetotab(char yline[],int cl,char toline[], int tabl){
 	int i,j,k;
 	k=0;
 	j=0;
 	for(i=0;i<cl;i++){
 		if(yline[i]==' '){
 			k++;
-			if((i+1)%TABS==0){
+			if((i+1)%tabl==0){
 				toline[j]='\t';
 				j++;
 				k=0;

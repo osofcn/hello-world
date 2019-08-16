@@ -16,7 +16,10 @@ int main(int argc, char *argv[]){
 	char s[NUMSIZE];
 	while(argc-- >1)
 		cal(*++argv);
-	printf("%f\n",pop());
+	if(argc==1)
+		printf("%f\n",pop());
+	else
+		printf("error\n");
 
 }
 
