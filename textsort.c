@@ -4,6 +4,9 @@
 #define MAXLEN 1000
 #define MAXLINES 5000
 #define MAXB 10000
+#define D 0x0fU
+#define F 0xf0U
+#define N 0x04U
 
 extern void qsort(void *v[], int ,int,int (*)(void *, void *));
 int readlines(char *text,char *lineptr[], int);
@@ -14,29 +17,32 @@ double atof(char *);
 int strvcmp(char *,char *);
 int strdcmp(char *,char *);
 
+static unsigned char match=0;
+
 int main(int argc, char *argv[]){
 	char text[MAXB];
 	char *lineptr[MAXLINES];
 	int nlines;
-	int (*numbers)(void *,void *) =(int (*)(void *,void *))strcmp;
-	int i,type;
-	type=0;
+	int (*numbers)(void *,void *) =(int (*)(void *,void *))strdcmp;
+	int i;
 	for(i=1;argc-i>0;i++){
 		if(strcmp(argv[i], "-n")==0)
-			type='n';
+			match |=N;
 		else if(strcmp(argv[i], "-f")==0)
-			type +='f';
+			match |=F;
 		else if(strcmp(argv[i], "-d")==0)
-			type +='d';
+			match |=D;
 	}
-	switch(type){
-		case 'n' :
+	switch(match){
+		case 0 :
+			break;
+		case N :
 			numbers=(int (*)(void *,void *))numcmp;
 			break;
-		case 'f' :
-			numbers=(int (*)(void *,void *))strvcmp;
+		case F :
+			numbers=(int (*)(void *,void *))strdcmp;
 			break;
-		case 'd' :
+		case D :
 			numbers=(int (*)(void *,void *))strdcmp;
 			break;
 		default :
@@ -100,15 +106,24 @@ int strvcmp(char *s, char *t){
 int strdcmp(char *s, char *t){
 	int i=0;
 	int j=0;
-	while(s[i]!='\0' && t[j]!='\0'){
-		if(!isalnum(s[i])&&s[i]!=' ')
+	char cps,cpt;
+	unsigned char d,f;
+	d=f=0;
+	d=match & D;
+	f=match & F;
+	do{
+		if(d){
+		while(!isalnum(s[i])&&s[i]!=' '&&s[i]!='\0')
 			i++;
-		if(!isalnum(t[i])&&t[i]!=' ')
+		while(!isalnum(t[i])&&t[i]!=' '&&t[j]!='\0')
 			j++;
-		if(s[i]==t[j])
-			i++, j++;
-			else if((isalnum(s[i]) || s[i]==' ')&&(isalnum(t[j]) || t[j]==' '))
-			return s[i] - t[j];
-	}
-	return s[i] - t[j];
+		}
+		cps=(f) ? tolower(s[i]) :s[i];
+		i++;
+		cpt=(f) ? tolower(t[j]) :t[j];
+		j++;
+		if(cps=='\0' &&cpt=='\0')
+			return 0;
+	}while(cps == cpt);
+	return cps - cpt;
 }
