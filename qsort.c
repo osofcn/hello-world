@@ -2,7 +2,7 @@
  * 为了简单用递归函数完成。   */
 
 
-void qsort(void *v[], int left, int right, int (*cmpr)(void *, void *)){
+void qqsort(void *v[], int left, int right, int (*cmpr)(void *, void *)){
 	int i, last;
 	void swap(void *v[], int i, int j);
 	
@@ -14,8 +14,8 @@ void qsort(void *v[], int left, int right, int (*cmpr)(void *, void *)){
 		if((*cmpr)(v[i],v[left])<0)
 				swap(v, ++last, i);
 	swap(v, left, last);
-	qsort(v, left, last-1,cmpr);
-	qsort(v, last+1,right,cmpr);
+	qqsort(v, left, last-1,cmpr);
+	qqsort(v, last+1,right,cmpr);
 }
 
 void swap(void *v[], int i, int j){

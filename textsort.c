@@ -1,23 +1,27 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+
 #define MAXLEN 1000
 #define MAXLINES 5000
 #define MAXB 10000
 #define D 0x0fU
 #define F 0xf0U
 #define N 0x04U
+#define W 0x02U
 
-extern void qsort(void *v[], int ,int,int (*)(void *, void *));
-int readlines(char *text,char *lineptr[], int);
+extern void qqsort(void *v[], int ,int,int (*)(void *, void *));
+int readlines(char *text,char *lineptr[], int,int (*)(void *,int,int));
 void writelines(char *lineptr[] , int);
 int getLine(char *, int);
 int numcmp(char *, char *);
-double atof(char *);
 int strvcmp(char *,char *);
 int strdcmp(char *,char *);
+int getWord(char *,int, int);
 
 static unsigned char match=0;
+static int num=1;
 
 int main(int argc, char *argv[]){
 	char text[MAXB];
@@ -32,6 +36,11 @@ int main(int argc, char *argv[]){
 			match |=F;
 		else if(strcmp(argv[i], "-d")==0)
 			match |=D;
+		else if(argv[i][1]=='w'){
+			match |=W;
+			num=(argv[i]+2==0) ? 1 : atoi(argv[i]+2);
+		}
+
 	}
 	switch(match){
 		case 0 :
@@ -49,8 +58,8 @@ int main(int argc, char *argv[]){
 			printf("error args\n");
 			break;
 	}
-	if((nlines=readlines(text, lineptr,MAXLINES))>=0){
-        qsort((void **)lineptr,0,nlines-1,(int (*)(void *,void *))numbers);	
+	if((nlines=readlines(text, lineptr,MAXLINES,(int (*)(void *,int,int))(match== W) ? getWord : getLine))>=0){
+        qqsort((void **)lineptr,0,nlines-1,(int (*)(void *,void *))numbers);	
 	writelines(lineptr, nlines);
 	return 0;
 	}
@@ -60,12 +69,12 @@ int main(int argc, char *argv[]){
 	}
 }
 
-int readlines(char *text, char *lineptr[], int maxlines){
+int readlines(char *text, char *lineptr[], int maxlines,int (*getwl)(void *,int,int)){
 	int cl,nlines;
 	char tmp[MAXLEN], * curptr;
 
 	nlines=0;
-	for(curptr=text;(cl=getLine(tmp, MAXLEN))>0;curptr+=cl+1){
+	for(curptr=text;(cl=(*getwl)(tmp,MAXLEN,num))>0;curptr+=cl+1){
 		if(nlines>=maxlines || curptr-text+cl>=MAXB)
 			return -1;
 		strcpy(curptr, tmp);
@@ -95,7 +104,7 @@ int numcmp(char *s, char *t){
 }
 
 int strvcmp(char *s, char *t){
-	int c;
+int c;
 	int i;
 	for(i=0;tolower(s[i])==tolower(t[i]);i++)
 		if(s[i]=='\0')
@@ -115,7 +124,7 @@ int strdcmp(char *s, char *t){
 		if(d){
 		while(!isalnum(s[i])&&s[i]!=' '&&s[i]!='\0')
 			i++;
-		while(!isalnum(t[i])&&t[i]!=' '&&t[j]!='\0')
+		while(!isalnum(t[j])&&t[j]!=' '&&t[j]!='\0')
 			j++;
 		}
 		cps=(f) ? tolower(s[i]) :s[i];
