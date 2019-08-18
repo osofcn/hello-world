@@ -2,7 +2,7 @@
 float wenduc(float f);
 int main(void){
 	float fwendu;             
-	printf("\t华氏温度与摄氏度");            /*对照/*表*/\n); */ 
+	printf("\t华氏温度与摄氏度");            
 	for(fwendu=300;fwendu>=0;fwendu-=20){
 		printf("%3.0f\t%6.1f\n",fwendu,wenduc(fwendu));
 	}

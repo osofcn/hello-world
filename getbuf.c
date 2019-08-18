@@ -16,10 +16,11 @@ void ungetch(int c){
 		printf("sdsdfs");
 }
 
-void ungets(char s[]){
+void ungetss(char *s){
 	void ungetch(int c);
-
-	for(int i=0;s[i]!='\0';i++)
-		ungetch(s[i]);
+	int i;
+	for(i=0;s[i]!='\0';i++);
+	while(i>0)
+		ungetch(s[--i]);
 }
 

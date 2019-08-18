@@ -12,16 +12,16 @@
 #define W 0x02U
 
 extern void qqsort(void *v[], int ,int,int (*)(void *, void *));
-int readlines(char *text,char *lineptr[], int,int (*)(void *,int,int));
+int readlines(char *text,char *lineptr[], int);
 void writelines(char *lineptr[] , int);
 int getLine(char *, int);
 int numcmp(char *, char *);
 int strvcmp(char *,char *);
 int strdcmp(char *,char *);
 int getWord(char *,int, int);
-
+int strnncmp(char *,char *);
 static unsigned char match=0;
-static int num=1;
+static int num=0;
 
 int main(int argc, char *argv[]){
 	char text[MAXB];
@@ -37,7 +37,6 @@ int main(int argc, char *argv[]){
 		else if(strcmp(argv[i], "-d")==0)
 			match |=D;
 		else if(argv[i][1]=='w'){
-			match |=W;
 			num=(argv[i]+2==0) ? 1 : atoi(argv[i]+2);
 		}
 
@@ -54,12 +53,15 @@ int main(int argc, char *argv[]){
 		case D :
 			numbers=(int (*)(void *,void *))strdcmp;
 			break;
+		case W :
+			numbers=(int (*)(void *,void *))strnncmp;
+			break;
 		default :
 			printf("error args\n");
 			break;
 	}
-	if((nlines=readlines(text, lineptr,MAXLINES,(int (*)(void *,int,int))(match== W) ? getWord : getLine))>=0){
-        qqsort((void **)lineptr,0,nlines-1,(int (*)(void *,void *))numbers);	
+	if((nlines=readlines(text, lineptr,MAXLINES))>=0){
+        qqsort((void **)lineptr,0,nlines-1,(int (*)(void *,void *))(num>0) ? strnncmp : numbers);	
 	writelines(lineptr, nlines);
 	return 0;
 	}
@@ -69,12 +71,12 @@ int main(int argc, char *argv[]){
 	}
 }
 
-int readlines(char *text, char *lineptr[], int maxlines,int (*getwl)(void *,int,int)){
+int readlines(char *text, char *lineptr[], int maxlines){
 	int cl,nlines;
 	char tmp[MAXLEN], * curptr;
 
 	nlines=0;
-	for(curptr=text;(cl=(*getwl)(tmp,MAXLEN,num))>0;curptr+=cl+1){
+	for(curptr=text;(cl=getLine(tmp,MAXLEN))>0;curptr+=cl+1){
 		if(nlines>=maxlines || curptr-text+cl>=MAXB)
 			return -1;
 		strcpy(curptr, tmp);
@@ -136,3 +138,43 @@ int strdcmp(char *s, char *t){
 	}while(cps == cpt);
 	return cps - cpt;
 }
+
+int strnncmp(char *s,char *t){
+	int i,starts,startt;
+	int n;
+	char ss[100];
+	char tt[100];
+	extern int num;
+	int a=0;
+	for(i=0,n=0;s[i]!='\0'&& n<num;){
+		while(s[i]==' ' || s[i]=='\t')
+			i++;
+		a=0;
+		if(isalnum(s[i])){
+			n++;
+			starts=i;
+			while(isalnum(ss[a++]=s[i++]))
+				; 
+		}
+	}
+	ss[--a]='\0';
+	for(i=0,n=0;t[i]!='\0'&& n<num;){
+		while(t[i]==' ' || t[i]=='\t')
+			i++;
+		a=0;
+		if(isalnum(t[i])){
+			n++;
+			startt=i;
+			while(isalnum(tt[a++]=t[i++]))
+				;
+		}
+	}
+	tt[--a]='\0';
+	return strdcmp(ss,tt);
+	/*for(;s[starts]==t[startt];starts++,startt++)
+		if(!isalnum(s[starts]))
+			return 0;
+	return s[starts] - t[startt];*/
+}
+			
+
