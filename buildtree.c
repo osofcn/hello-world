@@ -39,13 +39,44 @@ struct tnode *addtree(struct tnode *p,char *word){
 		p->same = NULL;
 		p->left = NULL;
 		p->right = NULL;
-	}else if((cond=strncmp(word, p->word,arg))==0)
-		insertw( p, word);
+	}else if((cond=strcmp(word, p->word))==0)
+		p->count++;
+		//insertw( p, word);
 	else if(cond>0)
 		p->right=addtree(p->right, word);
 	else
 		p->left=addtree(p->left, word);
 	return p;
+}
+
+struct tnode *rebuild(struct tnode *rep ,struct tnode *p){
+	if(rep == NULL){
+		rep = alloctn();
+		rep->word = allocwd(p->word);
+		rep->count = p->count;
+		rep->left=rep->right = NULL;
+	}else if(p->count > rep->count)
+		rep->right = rebuild(rep->right, p);
+	else
+		rep->left = rebuild(rep->left, p);
+	return rep;
+}
+
+struct tnode *fre(struct tnode *rep, struct tnode *p){
+	if(p!=NULL){
+	rep=rebuild(rep,p);
+	rep=fre(rep, p->left);
+	rep=fre(rep,p->right);
+	}
+	return rep;
+}
+
+void writew(struct tnode *p){
+	if(p!=NULL){
+		writew(p->right);
+			printf("%s %d ",p->word,p->count);
+		writew(p->left);
+	}
 }
 
 void writeword(struct tnode *p){
@@ -63,13 +94,15 @@ void writeword(struct tnode *p){
 
 int main(int argc, char *argv[]){
 	struct tnode *p=NULL;
+	struct tnode *rep=NULL;
 	char word[100];
 	if(argc ==2)
 		arg = *argv[1];
 	while(getWord(word, 100)!=EOF)
 		if(isalpha(word[0]))
 			p = addtree( p, word);
-	writeword(p);
+	rep=fre(rep,p);
+	writew(rep);
 	return 0;
 }
 
