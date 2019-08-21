@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #define HASHSIZE 101
+
+int geWord(char *, int);
+
 struct nlist{
 	struct nlist *next;
 	char *key;
@@ -72,6 +75,23 @@ void undef(char *key){
 	}
 }
 
-
-
-
+int main(void){
+	char w[101],key[101],alter[101];
+	int c;
+	struct nlist *p;
+	while(getWord(w,100)>0){
+		if(w[0] =='#' && strcmp(w,"#define")==0){
+			if((c=getWord(w,100))!='\n' &&c != EOF)
+				strcpy(key,w);
+			else
+				ungetch(c);
+			while((c=getWord(w,100))!='\n' && c != EOF)
+				strcat(alter,w);
+			insertkey(key,alter);
+		}
+		if((p = lookup(w)) != NULL)
+			printf("%s ", p->alter);
+		else
+			printf("%s ", w);
+	}
+}

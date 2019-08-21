@@ -19,7 +19,7 @@ int getWord(char *aword, int maxw){
 		return c;
 	}
 
-/*	if(c=='\\'){
+	if(c=='\\'){
 		*--w=getch();
 		*++w='\0';
 	}
@@ -48,7 +48,7 @@ int getWord(char *aword, int maxw){
 				break;
 		return aword[0];
 	}
-*/
+
 	for(;--maxw >0; w++)
 		if( !isalnum(*w = getch())){
 			ungetch(*w);
